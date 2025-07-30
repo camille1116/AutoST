@@ -11,12 +11,14 @@ import shapefile
 m_region =[]
 shp_df = geopandas.GeoDataFrame.from_file("../data/2010 Census Blocks/geo_export_c80540b5-38fc-4bb4-81cd-ae8082c49f02.shp",encoding = 'gb18030').values.tolist()
 for item in shp_df:
+    #item[2]是地区名
     if item[2] == "Manhattan":
         m_region.append(item)
 
 # print(len(m_region))
 q_index = []
 for hh in m_region:
+    #hh[3]是普查街区编号
     if hh[3] not in q_index:
         q_index.append(hh[3])
 print(len(q_index))
@@ -25,12 +27,14 @@ for item in m_region:
     if item[3] not in region_dict.keys():
         region_dict[item[3]] = item
     else:
+        #item[5]是区域面积，如果不是遇到的第一个普查街区，则比较面积大小
         if item[5] > region_dict[item[3]][5]:
             region_dict[item[3]] = item
 # print(m_region)
 # print(len(region_dict))
 region_trans = {}
 for key,value in region_dict.items():
+    #value[-1]是多边形各点的坐标
     region_trans[int(key)] = value[-1]
 # print(region_trans[1051])
 # print(len(region_trans))
@@ -40,6 +44,7 @@ for idx,im in enumerate(region_trans.items()):
 # print(len(region_s))
 # print(region_s[0])
 import pickle
+#将文件存储为pickle格式，保存处理后的数据，方便之后直接加载使用
 file=open(r"../data/region_back.pickle","wb")
 pickle.dump(region_s,file) #storing_list
 file.close()
